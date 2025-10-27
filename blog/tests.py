@@ -114,3 +114,23 @@ class PostViewTest(TestCase):
         response = self.client.post(reverse('post_delete', args=[post_id]))
         self.assertEqual(Post.objects.filter(pk=post_id).count(), 0)
         self.assertRedirects(response, reverse('post_list'))
+
+    def test_post_create_empty_title_validation(self):
+        """Test that empty title is rejected"""
+        self.client.login(username='testuser', password='testpass123')
+        response = self.client.post(reverse('post_create'), {
+            'title': '',
+            'content': 'Some content',
+        })
+        self.assertEqual(Post.objects.count(), 1)  # Still only original post
+        self.assertContains(response, 'Title and content are required')
+
+    def test_post_create_empty_content_validation(self):
+        """Test that empty content is rejected"""
+        self.client.login(username='testuser', password='testpass123')
+        response = self.client.post(reverse('post_create'), {
+            'title': 'Some title',
+            'content': '',
+        })
+        self.assertEqual(Post.objects.count(), 1)  # Still only original post
+        self.assertContains(response, 'Title and content are required')

@@ -19,9 +19,14 @@ def post_detail(request, pk):
 def post_create(request):
     """Create a new post"""
     if request.method == 'POST':
-        title = request.POST.get('title')
-        content = request.POST.get('content')
+        title = request.POST.get('title', '').strip()
+        content = request.POST.get('content', '').strip()
         published = request.POST.get('published') == 'on'
+        
+        # Validate required fields
+        if not title or not content:
+            messages.error(request, 'Title and content are required.')
+            return render(request, 'blog/post_form.html', {'action': 'Create'})
         
         post = Post.objects.create(
             title=title,
@@ -40,9 +45,18 @@ def post_update(request, pk):
     post = get_object_or_404(Post, pk=pk)
     
     if request.method == 'POST':
-        post.title = request.POST.get('title')
-        post.content = request.POST.get('content')
-        post.published = request.POST.get('published') == 'on'
+        title = request.POST.get('title', '').strip()
+        content = request.POST.get('content', '').strip()
+        published = request.POST.get('published') == 'on'
+        
+        # Validate required fields
+        if not title or not content:
+            messages.error(request, 'Title and content are required.')
+            return render(request, 'blog/post_form.html', {'post': post, 'action': 'Update'})
+        
+        post.title = title
+        post.content = content
+        post.published = published
         post.save()
         messages.success(request, 'Post updated successfully!')
         return redirect('post_detail', pk=post.pk)
