@@ -24,5 +24,6 @@ class AboutPageTestCase(TestCase):
     def test_about_link_in_navigation(self):
         """Test that the About link is present in the navigation"""
         response = self.client.get(reverse('home'))
-        self.assertContains(response, 'href="/about/"')
+        about_url = reverse('about')
+        self.assertContains(response, f'href="{about_url}"')
         self.assertContains(response, '>About<')
