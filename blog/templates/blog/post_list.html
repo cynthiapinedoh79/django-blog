@@ -1,0 +1,60 @@
+{% extends "blog/base.html" %}
+
+{% block title %}Blog Posts{% endblock %}
+
+{% block extra_css %}
+<style>
+    .post-list {
+        background: white;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .post-item {
+        padding: 20px 0;
+        border-bottom: 1px solid #eee;
+    }
+    .post-item:last-child {
+        border-bottom: none;
+    }
+    .post-item h2 {
+        margin-bottom: 10px;
+    }
+    .post-item h2 a {
+        color: #333;
+        text-decoration: none;
+    }
+    .post-item h2 a:hover {
+        color: #007bff;
+    }
+    .post-meta {
+        color: #666;
+        font-size: 0.9em;
+        margin-bottom: 10px;
+    }
+    .post-excerpt {
+        color: #555;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="post-list">
+    <h1>Blog Posts</h1>
+    {% if posts %}
+        {% for post in posts %}
+        <div class="post-item">
+            <h2><a href="{% url 'post_detail' post.slug %}">{{ post.title }}</a></h2>
+            <div class="post-meta">
+                By {{ post.author.username }} | {{ post.created_on|date:"F d, Y" }}
+            </div>
+            <div class="post-excerpt">
+                {{ post.content|truncatewords:30 }}
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No posts available.</p>
+    {% endif %}
+</div>
+{% endblock %}

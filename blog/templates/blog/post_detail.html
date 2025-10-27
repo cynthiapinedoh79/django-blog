@@ -1,0 +1,234 @@
+{% extends "blog/base.html" %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .post-detail {
+        background: white;
+        padding: 30px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+    .post-meta {
+        color: #666;
+        font-size: 0.9em;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
+    }
+    .post-content {
+        line-height: 1.8;
+        margin-bottom: 30px;
+    }
+    .comments-section {
+        background: white;
+        padding: 30px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .comments-section h2 {
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #007bff;
+    }
+    .comment {
+        padding: 15px;
+        margin-bottom: 20px;
+        background: #f8f9fa;
+        border-radius: 5px;
+        border-left: 3px solid #007bff;
+    }
+    .comment-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        font-size: 0.9em;
+    }
+    .comment-author {
+        font-weight: bold;
+        color: #007bff;
+    }
+    .comment-date {
+        color: #666;
+    }
+    .comment-content {
+        margin-bottom: 10px;
+        line-height: 1.6;
+    }
+    .reply {
+        margin-left: 40px;
+        margin-top: 10px;
+        padding: 15px;
+        background: #fff;
+        border-radius: 5px;
+        border-left: 3px solid #28a745;
+    }
+    .reply-button {
+        background: #28a745;
+        color: white;
+        border: none;
+        padding: 5px 15px;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 0.85em;
+    }
+    .reply-button:hover {
+        background: #218838;
+    }
+    .comment-form {
+        margin-top: 30px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 5px;
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+    }
+    .btn-primary {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 30px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    .btn-primary:hover {
+        background: #0056b3;
+    }
+    .btn-cancel {
+        background: #6c757d;
+        color: white;
+        border: none;
+        padding: 5px 15px;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 0.85em;
+        margin-left: 10px;
+    }
+    .btn-cancel:hover {
+        background: #545b62;
+    }
+    .reply-form {
+        display: none;
+        margin-top: 10px;
+        padding: 15px;
+        background: #fff;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+    }
+    .no-comments {
+        text-align: center;
+        color: #666;
+        padding: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="post-detail">
+    <h1>{{ post.title }}</h1>
+    <div class="post-meta">
+        By {{ post.author.username }} | {{ post.created_on|date:"F d, Y" }}
+    </div>
+    <div class="post-content">
+        {{ post.content|linebreaks }}
+    </div>
+</div>
+
+<div class="comments-section">
+    <h2>Comments ({{ comments.count }})</h2>
+    
+    {% if comments %}
+        {% for comment in comments %}
+        <div class="comment" id="comment-{{ comment.id }}">
+            <div class="comment-header">
+                <span class="comment-author">{{ comment.author.username }}</span>
+                <span class="comment-date">{{ comment.created_on|date:"F d, Y H:i" }}</span>
+            </div>
+            <div class="comment-content">
+                {{ comment.content|linebreaks }}
+            </div>
+            {% if user.is_authenticated %}
+            <button class="reply-button" onclick="toggleReplyForm('{{ comment.id }}')">Reply</button>
+            {% endif %}
+            
+            <!-- Reply form -->
+            {% if user.is_authenticated %}
+            <div id="reply-form-{{ comment.id }}" class="reply-form">
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                    <div class="form-group">
+                        <label>Your Reply:</label>
+                        {{ comment_form.content }}
+                    </div>
+                    <button type="submit" class="btn-primary">Submit Reply</button>
+                    <button type="button" class="btn-cancel" onclick="toggleReplyForm('{{ comment.id }}')">Cancel</button>
+                </form>
+            </div>
+            {% endif %}
+            
+            <!-- Display replies -->
+            {% if comment.get_replies %}
+                {% for reply in comment.get_replies %}
+                <div class="reply">
+                    <div class="comment-header">
+                        <span class="comment-author">{{ reply.author.username }}</span>
+                        <span class="comment-date">{{ reply.created_on|date:"F d, Y H:i" }}</span>
+                    </div>
+                    <div class="comment-content">
+                        {{ reply.content|linebreaks }}
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        {% endfor %}
+    {% else %}
+        <p class="no-comments">No comments yet. Be the first to comment!</p>
+    {% endif %}
+    
+    <!-- Main comment form -->
+    <div class="comment-form">
+        <h3>Leave a Comment</h3>
+        {% if user.is_authenticated %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ comment_form.content }}
+            </div>
+            <button type="submit" class="btn-primary">Submit Comment</button>
+        </form>
+        {% else %}
+        <p>You must be logged in to comment. <a href="{% url 'admin:login' %}?next={{ request.path }}">Login here</a></p>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function toggleReplyForm(commentId) {
+    const form = document.getElementById('reply-form-' + commentId);
+    if (form.style.display === 'none' || form.style.display === '') {
+        form.style.display = 'block';
+    } else {
+        form.style.display = 'none';
+    }
+}
+</script>
+{% endblock %}
