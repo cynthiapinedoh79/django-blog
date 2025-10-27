@@ -1,0 +1,31 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+    <article class="post">
+        <h2>{{ post.title }}</h2>
+        <div class="post-meta">
+            By {{ post.author.username }} | 
+            Created: {{ post.created_at|date:"F d, Y H:i" }} | 
+            Updated: {{ post.updated_at|date:"F d, Y H:i" }}
+            {% if post.published %}
+                <span style="color: green;">✓ Published</span>
+            {% else %}
+                <span style="color: orange;">○ Draft</span>
+            {% endif %}
+        </div>
+        <div style="margin-top: 20px; white-space: pre-wrap;">{{ post.content }}</div>
+        
+        {% if user.is_authenticated %}
+            <div style="margin-top: 20px;">
+                <a href="{% url 'post_update' post.pk %}" class="btn">Edit</a>
+                <a href="{% url 'post_delete' post.pk %}" class="btn btn-danger">Delete</a>
+            </div>
+        {% endif %}
+    </article>
+    
+    <div style="margin-top: 20px;">
+        <a href="{% url 'post_list' %}">&larr; Back to all posts</a>
+    </div>
+{% endblock %}
