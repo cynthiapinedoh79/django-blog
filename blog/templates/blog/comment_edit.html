@@ -1,0 +1,24 @@
+{% extends "blog/base.html" %}
+
+{% block title %}Edit Comment - Django Blog{% endblock %}
+
+{% block content %}
+<h1>Edit Comment</h1>
+
+<div class="comment">
+    <div class="comment-header">
+        <strong>{{ comment.author.username }}</strong> - {{ comment.created_at|date:"F d, Y H:i" }}
+    </div>
+    <p>On post: <strong>{{ comment.post.title }}</strong></p>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    <div>
+        <label for="content">Comment:</label>
+        <textarea name="content" id="content" required>{{ comment.content }}</textarea>
+    </div>
+    <button type="submit" class="btn-primary">Update Comment</button>
+    <a href="{% url 'post_detail' comment.post.pk %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}
