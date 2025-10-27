@@ -16,17 +16,23 @@ A Django blog application that allows site administrators to approve or disappro
 pip install -r requirements.txt
 ```
 
-2. Run migrations:
+2. Set up environment variables (optional for production):
+```bash
+export DJANGO_SECRET_KEY='your-secret-key-here'
+```
+Note: For development, a default insecure key is provided. For production, always set a secure SECRET_KEY via environment variable.
+
+3. Run migrations:
 ```bash
 python manage.py migrate
 ```
 
-3. Create a superuser (admin):
+4. Create a superuser (admin):
 ```bash
 python manage.py createsuperuser
 ```
 
-4. Start the development server:
+5. Start the development server:
 ```bash
 python manage.py runserver
 ```
