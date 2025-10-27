@@ -1,0 +1,22 @@
+{% extends "blog/base.html" %}
+
+{% block title %}Blog Posts{% endblock %}
+
+{% block content %}
+<h2>Latest Blog Posts</h2>
+
+{% if posts %}
+    {% for post in posts %}
+        <div class="post">
+            <h2><a href="{% url 'post_detail' post.slug %}" style="text-decoration: none; color: #333;">{{ post.title }}</a></h2>
+            <div class="post-meta">
+                By {{ post.author.username }} | {{ post.created_on|date:"F d, Y" }}
+            </div>
+            <p>{{ post.content|truncatewords:50 }}</p>
+            <a href="{% url 'post_detail' post.slug %}" class="btn">Read More</a>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No posts available yet.</p>
+{% endif %}
+{% endblock %}
