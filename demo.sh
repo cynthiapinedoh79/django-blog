@@ -2,6 +2,17 @@
 
 # Demonstration script for draft post functionality
 
+# Cleanup function to ensure server is stopped
+cleanup() {
+    if [ ! -z "$SERVER_PID" ]; then
+        kill $SERVER_PID 2>/dev/null
+        wait $SERVER_PID 2>/dev/null
+    fi
+}
+
+# Set trap to cleanup on exit
+trap cleanup EXIT INT TERM
+
 echo "=== Django Blog Draft Post Functionality Demo ==="
 echo ""
 
@@ -63,7 +74,7 @@ EOF
 
 echo ""
 echo "3. Testing public visibility:"
-python manage.py runserver 0.0.0.0:8000 > /tmp/server.log 2>&1 &
+python manage.py runserver 127.0.0.1:8000 > /tmp/server.log 2>&1 &
 SERVER_PID=$!
 sleep 2
 
@@ -96,8 +107,6 @@ if [ "$STATUS" == "200" ]; then
 else
     echo "    ✗ Published post returns $STATUS (should be 200)"
 fi
-
-kill $SERVER_PID 2>/dev/null
 
 echo ""
 echo "=== Demo Complete ==="
