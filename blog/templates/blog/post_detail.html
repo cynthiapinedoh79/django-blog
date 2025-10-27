@@ -1,0 +1,66 @@
+{% extends "blog/base.html" %}
+
+{% block title %}{{ post.title }} - Django Blog{% endblock %}
+
+{% block extra_css %}
+<style>
+    .post-detail {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    .post-title {
+        font-size: 2.5rem;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+    .post-meta {
+        color: #7f8c8d;
+        font-size: 1rem;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #ecf0f1;
+    }
+    .post-content {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: #2c3e50;
+        margin-bottom: 2rem;
+    }
+    .post-content p {
+        margin-bottom: 1rem;
+    }
+    .back-link {
+        display: inline-block;
+        margin-top: 2rem;
+        padding: 0.75rem 1.5rem;
+        background-color: #3498db;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: background-color 0.2s;
+    }
+    .back-link:hover {
+        background-color: #2980b9;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="post-detail">
+    <h1 class="post-title">{{ post.title }}</h1>
+    
+    <div class="post-meta">
+        <strong>By {{ post.author }}</strong> | Published on {{ post.created_on|date:"F d, Y" }}
+        {% if post.updated_on != post.created_on %}
+            | Updated on {{ post.updated_on|date:"F d, Y" }}
+        {% endif %}
+    </div>
+    
+    <div class="post-content">
+        {{ post.content|linebreaks }}
+    </div>
+    
+    <a href="{% url 'home' %}" class="back-link">← Back to Blog</a>
+</div>
+{% endblock %}
