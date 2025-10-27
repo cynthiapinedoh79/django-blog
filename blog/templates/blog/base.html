@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Django Blog{% endblock %}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .post {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .post h2 {
+            margin-top: 0;
+        }
+        .post-meta {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .comment {
+            background-color: #f9f9f9;
+            border-left: 3px solid #007bff;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .comment-author {
+            font-weight: bold;
+            color: #333;
+        }
+        .comment-date {
+            color: #666;
+            font-size: 0.85em;
+        }
+        .comment-body {
+            margin-top: 10px;
+        }
+        .comments-section {
+            margin-top: 40px;
+        }
+        .comment-count {
+            color: #007bff;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><a href="{% url 'home' %}">Django Blog</a></h1>
+    </header>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>
