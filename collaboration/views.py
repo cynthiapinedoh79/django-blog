@@ -2,7 +2,10 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
+import logging
 from .forms import CollaborationForm
+
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 
@@ -38,7 +41,7 @@ Submitted at: {collaboration.created_at}
                 )
             except Exception as e:
                 # Log error but don't fail the submission
-                print(f"Error sending email: {e}")
+                logger.error(f"Error sending email: {e}")
             
             # Display success message (AC2)
             messages.success(

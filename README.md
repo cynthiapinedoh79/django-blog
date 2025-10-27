@@ -28,22 +28,28 @@ cd django-blog
 pip install -r requirements.txt
 ```
 
-3. Run migrations:
+3. (Optional) For production, copy `.env.example` to `.env` and configure:
+```bash
+cp .env.example .env
+# Edit .env with your production settings
+```
+
+4. Run migrations:
 ```bash
 python manage.py migrate
 ```
 
-4. Create a superuser (optional, for admin access):
+5. Create a superuser (optional, for admin access):
 ```bash
 python manage.py createsuperuser
 ```
 
-5. Run the development server:
+6. Run the development server:
 ```bash
 python manage.py runserver
 ```
 
-6. Access the collaboration form at: http://localhost:8000/collaborate/
+7. Access the collaboration form at: http://localhost:8000/collaborate/
 
 ## Running Tests
 
