@@ -37,6 +37,7 @@ class PostListViewTest(TestCase):
                 slug=f'draft-post-{i+1}',
                 author=cls.test_user,
                 content=f'This is draft post content {i+1}',
+                excerpt=f'Draft excerpt {i+1}',
                 status=0  # Draft
             )
 
@@ -60,8 +61,7 @@ class PostListViewTest(TestCase):
         """Test that pagination shows 6 posts per page"""
         response = self.client.get(reverse('home'))
         self.assertEqual(response.status_code, 200)
-        self.assertTrue('is_paginated' in response.context)
-        self.assertTrue(response.context['is_paginated'] is True)
+        self.assertTrue(response.context['is_paginated'])
         self.assertEqual(len(response.context['object_list']), 6)
 
     def test_lists_all_published_posts(self):
@@ -69,8 +69,7 @@ class PostListViewTest(TestCase):
         # Get first page
         response = self.client.get(reverse('home'))
         self.assertEqual(response.status_code, 200)
-        self.assertTrue('is_paginated' in response.context)
-        self.assertTrue(response.context['is_paginated'] is True)
+        self.assertTrue(response.context['is_paginated'])
         
         # Should have 3 pages (15 posts / 6 per page = 2.5 -> 3 pages)
         self.assertEqual(response.context['page_obj'].paginator.num_pages, 3)
