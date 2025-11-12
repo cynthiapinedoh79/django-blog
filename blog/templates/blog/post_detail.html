@@ -1,0 +1,20 @@
+{% extends "blog/base.html" %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<a href="{% url 'post_list' %}" class="back-link">← Back to all posts</a>
+
+<article class="post">
+    <h2>{{ post.title }}</h2>
+    <div class="post-meta">
+        By {{ post.author.username }} | {{ post.created_on|date:"F d, Y" }}
+        {% if post.updated_on != post.created_on %}
+            | Updated: {{ post.updated_on|date:"F d, Y" }}
+        {% endif %}
+    </div>
+    <div class="post-content">
+        {{ post.content|linebreaks }}
+    </div>
+</article>
+{% endblock %}
