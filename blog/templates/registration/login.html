@@ -1,0 +1,37 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}Login - Django Blog{% endblock %}
+
+{% block content %}
+<h2>Login</h2>
+
+<form method="post" style="margin-top: 20px; max-width: 400px;">
+    {% csrf_token %}
+    <div style="margin-bottom: 15px;">
+        <label for="{{ form.username.id_for_label }}" style="display: block; margin-bottom: 5px; font-weight: bold;">Username:</label>
+        {{ form.username }}
+        {% if form.username.errors %}
+            <div style="color: #dc3545; font-size: 0.9em; margin-top: 5px;">
+                {{ form.username.errors }}
+            </div>
+        {% endif %}
+    </div>
+    <div style="margin-bottom: 15px;">
+        <label for="{{ form.password.id_for_label }}" style="display: block; margin-bottom: 5px; font-weight: bold;">Password:</label>
+        {{ form.password }}
+        {% if form.password.errors %}
+            <div style="color: #dc3545; font-size: 0.9em; margin-top: 5px;">
+                {{ form.password.errors }}
+            </div>
+        {% endif %}
+    </div>
+    <button type="submit" class="btn">Login</button>
+    <input type="hidden" name="next" value="{{ next }}">
+</form>
+
+{% if form.non_field_errors %}
+    <div style="background: #f8d7da; color: #721c24; padding: 10px; margin-top: 20px; border-radius: 4px;">
+        {{ form.non_field_errors }}
+    </div>
+{% endif %}
+{% endblock %}

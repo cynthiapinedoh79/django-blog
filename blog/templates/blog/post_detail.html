@@ -1,0 +1,65 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}{{ post.title }} - Django Blog{% endblock %}
+
+{% block content %}
+<article>
+    <h2>{{ post.title }}</h2>
+    <p style="color: #666; font-size: 0.9em;">
+        By {{ post.author.username }} | {{ post.created_at|date:"F d, Y" }}
+    </p>
+    <div style="margin: 20px 0; line-height: 1.8;">
+        {{ post.content|linebreaks }}
+    </div>
+</article>
+
+<hr style="margin: 30px 0;">
+
+<section>
+    <h3>Comments ({{ comments.count }})</h3>
+    
+    {% if comments %}
+        {% for comment in comments %}
+        <div style="background: #f9f9f9; padding: 15px; margin: 15px 0; border-left: 3px solid #007bff; border-radius: 4px;">
+            <p style="margin-bottom: 10px;">{{ comment.content|linebreaks }}</p>
+            <p style="color: #666; font-size: 0.9em;">
+                <strong>{{ comment.author.username }}</strong> | 
+                {{ comment.created_at|date:"F d, Y H:i" }}
+                {% if comment.created_at != comment.updated_at %}
+                    <em>(edited)</em>
+                {% endif %}
+            </p>
+            {% if user.is_authenticated and comment.author == user %}
+            <div style="margin-top: 10px;">
+                <a href="{% url 'comment_edit' comment.pk %}" class="btn btn-sm btn-secondary">Edit</a>
+                <a href="{% url 'comment_delete' comment.pk %}" class="btn btn-sm btn-danger">Delete</a>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    {% else %}
+        <p style="color: #666; font-style: italic;">No comments yet. Be the first to comment!</p>
+    {% endif %}
+</section>
+
+<hr style="margin: 30px 0;">
+
+<section>
+    <h3>Add a Comment</h3>
+    {% if user.is_authenticated %}
+        <form method="post" style="margin-top: 20px;">
+            {% csrf_token %}
+            <div style="margin-bottom: 15px;">
+                {{ form.content }}
+            </div>
+            <button type="submit" class="btn">Post Comment</button>
+        </form>
+    {% else %}
+        <p>Please <a href="{% url 'login' %}?next={{ request.path }}">login</a> to leave a comment.</p>
+    {% endif %}
+</section>
+
+<div style="margin-top: 30px;">
+    <a href="{% url 'post_list' %}" class="btn btn-secondary">Back to Posts</a>
+</div>
+{% endblock %}
